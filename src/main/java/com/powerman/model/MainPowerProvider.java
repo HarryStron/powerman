@@ -3,82 +3,61 @@ package com.powerman.model;
 import com.google.common.base.MoreObjects;
 
 public class MainPowerProvider {
-    long profit;
+    private static final int TOTAL_CAPACITY = 100;
+    int availablePower;
+    int totalPowerReceived;
+    int totalPowerProvided;
+    int totalPowerProduced;
 
-    long reserve;
-    long amountToFull;
-    long needToProduce;
-
-    long totalReceived;
-    long totalProvided;
-    long totalProduced;
-
-    public long getProfit() {
-        return profit;
+    public MainPowerProvider() {
+        availablePower = 0;
+        totalPowerReceived = 0;
+        totalPowerProvided = 0;
+        totalPowerProduced = 0;
     }
 
-    public void setProfit(long profit) {
-        this.profit = profit;
+    public void store(int power) {
+        availablePower += power;
+        totalPowerReceived += power;
     }
 
-    public long getReserve() {
-        return reserve;
+    public int availablePower() {
+        return availablePower;
     }
 
-    public void setReserve(long reserve) {
-        this.reserve = reserve;
+    public int remainingCapacity() {
+        return TOTAL_CAPACITY - availablePower;
     }
 
-    public long getAmountToFull() {
-        return amountToFull;
+    public int requiredPowerProduction() {
+        if (TOTAL_CAPACITY/2 <= availablePower) {
+            return 0;
+        } else {
+            return TOTAL_CAPACITY / 2 - availablePower;
+        }
     }
 
-    public void setAmountToFull(long amountToFull) {
-        this.amountToFull = amountToFull;
+    public long totalPowerReceived() {
+        return totalPowerReceived;
     }
 
-    public long getNeedToProduce() {
-        return needToProduce;
+    public long totalPowerProvided() {
+        return totalPowerProvided;
     }
 
-    public void setNeedToProduce(long needToProduce) {
-        this.needToProduce = needToProduce;
-    }
-
-    public long getTotalReceived() {
-        return totalReceived;
-    }
-
-    public void setTotalReceived(long totalReceived) {
-        this.totalReceived = totalReceived;
-    }
-
-    public long getTotalProvided() {
-        return totalProvided;
-    }
-
-    public void setTotalProvided(long totalProvided) {
-        this.totalProvided = totalProvided;
-    }
-
-    public long getTotalProduced() {
-        return totalProduced;
-    }
-
-    public void setTotalProduced(long totalProduced) {
-        this.totalProduced = totalProduced;
+    public long totalPowerProduced() {
+        return totalPowerProduced;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("profit", profit)
-                .add("reserve", reserve)
-                .add("amountToFull", amountToFull)
-                .add("needToProduce", needToProduce)
-                .add("totalReceived", totalReceived)
-                .add("totalProvided", totalProvided)
-                .add("totalProduced", totalProduced)
+                .add("availablePower", availablePower())
+                .add("remainingCapacity", remainingCapacity())
+                .add("requiredPowerProduction", requiredPowerProduction())
+                .add("totalPowerReceived", totalPowerReceived())
+                .add("totalPowerProvided", totalPowerProvided())
+                .add("totalPowerProduced", totalPowerProduced())
                 .toString();
     }
 }

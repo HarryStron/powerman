@@ -5,9 +5,8 @@ import com.google.common.base.Objects;
 
 public class UserAccount {
     int accountNumber;
-    long produced;
-    long consumed;
-    double ratio;
+    int producedPower = 0;
+    int consumedPower = 0;
 
     protected UserAccount(){}
 
@@ -19,32 +18,24 @@ public class UserAccount {
         return accountNumber;
     }
 
-    public void setAccountNumber(int accountNumber) {
-        this.accountNumber = accountNumber;
+    public void produce(int power) {
+        producedPower += power;
     }
 
-    public long getProduced() {
-        return produced;
+    public void consume(int power) {
+        consumedPower += power;
     }
 
-    public void setProduced(long produced) {
-        this.produced = produced;
+    public long produced() {
+        return producedPower;
     }
 
-    public long getConsumed() {
-        return consumed;
+    public long consumed() {
+        return consumedPower;
     }
 
-    public void setConsumed(long consumed) {
-        this.consumed = consumed;
-    }
-
-    public double getRatio() {
-        return ratio;
-    }
-
-    public void setRatio(double ratio) {
-        this.ratio = ratio;
+    public float ratio() {
+        return (float)producedPower / consumedPower;
     }
 
     @Override
@@ -53,23 +44,22 @@ public class UserAccount {
         if (o == null || getClass() != o.getClass()) return false;
         UserAccount that = (UserAccount) o;
         return accountNumber == that.accountNumber &&
-                produced == that.produced &&
-                consumed == that.consumed &&
-                Double.compare(that.ratio, ratio) == 0;
+                producedPower == that.producedPower &&
+                consumedPower == that.consumedPower;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(accountNumber, produced, consumed, ratio);
+        return Objects.hashCode(accountNumber, producedPower, consumedPower);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("accountNumber", accountNumber)
-                .add("produced", produced)
-                .add("consumed", consumed)
-                .add("ratio", ratio)
+                .add("producedPower", producedPower)
+                .add("consumedPower", consumedPower)
+                .add("ratio", ratio())
                 .toString();
     }
 }
