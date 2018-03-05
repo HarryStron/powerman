@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ApplicationConfig {
+    private static final int TOTAL_POWER_CAPACITY = 100;
+
     @Bean
     public AccountStore accountStore() {
         return new AccountStore();
@@ -14,6 +16,6 @@ public class ApplicationConfig {
 
     @Bean
     public MainPowerProvider powerProvider() {
-        return new MainPowerProvider();
+        return new MainPowerProvider(TOTAL_POWER_CAPACITY);
     }
 }

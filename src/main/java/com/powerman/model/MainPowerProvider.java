@@ -3,13 +3,14 @@ package com.powerman.model;
 import com.google.common.base.MoreObjects;
 
 public class MainPowerProvider {
-    private static final int TOTAL_CAPACITY = 100;
-    int availablePower;
-    int totalPowerReceived;
-    int totalPowerProvided;
-    int totalPowerProduced;
+    private int totalCapacity;
+    private int availablePower;
+    private int totalPowerReceived;
+    private int totalPowerProvided;
+    private int totalPowerProduced;
 
-    public MainPowerProvider() {
+    public MainPowerProvider(int capacity) {
+        totalCapacity = capacity;
         availablePower = 0;
         totalPowerReceived = 0;
         totalPowerProvided = 0;
@@ -21,19 +22,29 @@ public class MainPowerProvider {
         totalPowerReceived += power;
     }
 
+    public void generate(int power) {
+        availablePower += power;
+        totalPowerProduced += power;
+    }
+
+    public void consume(int power) {
+        availablePower -= power;
+        totalPowerProvided += power;
+    }
+
     public int availablePower() {
         return availablePower;
     }
 
     public int remainingCapacity() {
-        return TOTAL_CAPACITY - availablePower;
+        return totalCapacity - availablePower;
     }
 
     public int requiredPowerProduction() {
-        if (TOTAL_CAPACITY/2 <= availablePower) {
+        if (totalCapacity /2 <= availablePower) {
             return 0;
         } else {
-            return TOTAL_CAPACITY / 2 - availablePower;
+            return totalCapacity / 2 - availablePower;
         }
     }
 

@@ -3,6 +3,8 @@ package com.powerman.RestController;
 import com.powerman.Database.AccountStore;
 import com.powerman.model.MainPowerProvider;
 import com.powerman.model.UserAccount;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,8 +32,9 @@ public class AccountResource {
     }
 
     @RequestMapping(value = "/account", method = RequestMethod.POST)
-    public void createAccount(int accountId) {
+    public Response createAccount(int accountId) {
         UserAccount account = new UserAccount(accountId);
         accountStore.addAccount(account);
+        return Response.created(UriBuilder.fromPath("/" + accountId).build()).build();
     }
 }

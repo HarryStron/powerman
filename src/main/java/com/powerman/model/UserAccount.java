@@ -4,17 +4,15 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class UserAccount {
-    int accountNumber;
-    int producedPower = 0;
-    int consumedPower = 0;
-
-    protected UserAccount(){}
+    private int accountNumber;
+    private int producedPower = 0;
+    private int consumedPower = 0;
 
     public UserAccount(int accountNumber) {
         this.accountNumber = accountNumber;
     }
 
-    public int getAccountNumber() {
+    public int accountNumber() {
         return accountNumber;
     }
 
