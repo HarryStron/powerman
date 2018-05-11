@@ -1,42 +1,62 @@
 package com.powerman.RestController;
 
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.powerman.model.MainPowerProvider;
+import com.powerman.model.UserAccount;
+import java.net.URI;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(AccountResource.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AccountResourceTest {
-    @Autowired
-    MockMvc mockMvc;
+    @LocalServerPort
+    private int port;
 
-    @MockBean
-    AccountResource accountResourceMock;
+    private Client client = ClientBuilder.newClient();
 
-    @Autowired
-    ObjectMapper objectMapper;
+    @Before
+    public void setup() {
+        URI resourceUri = UriBuilder.fromUri("http://localhost").port(port).path("account").build();
+        client.target(resourceUri).request().post(Entity.json(333));
+    }
 
     @Test
-    public void canPOST() throws Exception {
-        Response.ResponseBuilder created = Response.created(UriBuilder.fromPath("/123").build());
-        when(accountResourceMock.createAccount(123)).thenReturn(created.build());
+    public void canGetMainProviderAccount() {
+        URI resourceUri = UriBuilder.fromUri("http://localhost").port(port).path("masterAccount").build();
+        Response response = client.target(resourceUri).request().get();
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .request(HttpMethod.POST, "/account")
-                .content("{\t\"accountId\": \"123\"}"))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+        assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
+        assertThat(response.readEntity(UserAccount.class)).isEqualTo(new MainPowerProvider(100));
+    }
+
+    @Test
+    public void canGetUserAccount() {
+        URI resourceUri = UriBuilder.fromUri("http://localhost").port(port).path("account").path("333").build();
+        Response response = client.target(resourceUri).request().get();
+
+        assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
+        assertThat(response.readEntity(UserAccount.class)).isEqualTo(new UserAccount(333));
+    }
+
+    @Test
+    public void canPostNewUserAccount() {
+        URI resourceUri = UriBuilder.fromUri("http://localhost").port(port).path("account").build();
+        Response response = client.target(resourceUri).request().post(Entity.json(123));
+
+        assertThat(response.getStatus()).isEqualTo(Response.Status.CREATED.getStatusCode());
+        assertThat(response.getHeaderString(HttpHeaders.LOCATION))
+                .isEqualTo(UriBuilder.fromUri(resourceUri).path("123").build().toString());
     }
 }

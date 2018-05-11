@@ -3,12 +3,19 @@ package com.powerman.RestController;
 import com.powerman.Database.AccountStore;
 import com.powerman.model.MainPowerProvider;
 import com.powerman.model.UserAccount;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 public class AccountResource {
@@ -22,19 +29,22 @@ public class AccountResource {
     }
 
     @RequestMapping(value = "/masterAccount", method = RequestMethod.GET)
-    public MainPowerProvider getMasterAccount() {
-        return mainPowerProvider;
+    public ResponseEntity<MainPowerProvider> getMasterAccount() {
+        return ResponseEntity.ok(mainPowerProvider);
     }
 
-    @RequestMapping(value = "/account", method = RequestMethod.GET)
-    public UserAccount getAccount(int accountId) {
-        return accountStore.getAccount(accountId);
+    @RequestMapping(value = "/account/{accountId}", method = RequestMethod.GET)
+    public ResponseEntity<UserAccount> getAccount(@PathVariable("accountId") int accountId) {
+        return ResponseEntity.ok(accountStore.getAccount(accountId));
     }
 
     @RequestMapping(value = "/account", method = RequestMethod.POST)
-    public Response createAccount(int accountId) {
+    public ResponseEntity createAccount(@RequestBody int accountId, UriComponentsBuilder b) {
         UserAccount account = new UserAccount(accountId);
         accountStore.addAccount(account);
-        return Response.created(UriBuilder.fromPath("/" + accountId).build()).build();
+        UriComponents uriComponents = b.path("/account/{id}").buildAndExpand(account.accountNumber());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(uriComponents.toUri());
+        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
     }
 }

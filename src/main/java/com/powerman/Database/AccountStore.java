@@ -4,7 +4,7 @@ import com.powerman.model.UserAccount;
 import java.util.HashMap;
 
 public class AccountStore {
-    private HashMap<Integer, UserAccount> userMap = new HashMap<>();
+    private HashMap<Integer, UserAccount> userMap = new HashMap();
 
     public void addAccount(UserAccount userAccount) {
         userMap.put(userAccount.accountNumber(), userAccount);
