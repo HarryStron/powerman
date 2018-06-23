@@ -38,7 +38,7 @@ public class AccountResourceIntegrationTest {
         Response response = client.target(resourceUri).request().get();
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
-        assertThat(response.readEntity(UserAccount.class)).isEqualTo(new MainPowerProvider(100));
+        assertThat(response.readEntity(MainPowerProvider.class)).isEqualTo(new MainPowerProvider(100));
     }
 
     @Test

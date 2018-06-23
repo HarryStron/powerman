@@ -1,18 +1,31 @@
 package com.powerman.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserAccount {
     private int accountNumber;
     private int producedPower = 0;
     private int consumedPower = 0;
 
+    @JsonCreator
+    public UserAccount(@JsonProperty("accountNumber") int accountNumber,
+                       @JsonProperty("producedPower") int producedPower,
+                       @JsonProperty("consumedPower") int consumedPower) {
+        this.accountNumber = accountNumber;
+        this.producedPower = producedPower;
+        this.consumedPower = consumedPower;
+    }
+
     public UserAccount(int accountNumber) {
         this.accountNumber = accountNumber;
     }
 
-    public int accountNumber() {
+    public int getAccountNumber() {
         return accountNumber;
     }
 
@@ -24,15 +37,15 @@ public class UserAccount {
         consumedPower += power;
     }
 
-    public long produced() {
+    public long getProducedPower() {
         return producedPower;
     }
 
-    public long consumed() {
+    public long getConsumedPower() {
         return consumedPower;
     }
 
-    public float ratio() {
+    public float getRatio() {
         return (float)producedPower / consumedPower;
     }
 
@@ -54,10 +67,10 @@ public class UserAccount {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("accountNumber", accountNumber)
+                .add("getAccountNumber", accountNumber)
                 .add("producedPower", producedPower)
                 .add("consumedPower", consumedPower)
-                .add("ratio", ratio())
+                .add("getRatio", getRatio())
                 .toString();
     }
 }

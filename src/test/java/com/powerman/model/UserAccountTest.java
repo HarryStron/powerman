@@ -15,26 +15,26 @@ public class UserAccountTest {
 
     @Test
     public void accountNumber() {
-        assertThat(userAccount.accountNumber()).isEqualTo(123);
+        assertThat(userAccount.getAccountNumber()).isEqualTo(123);
     }
 
     @Test
     public void produced() {
         userAccount.produce(20);
         userAccount.produce(10);
-        assertThat(userAccount.produced()).isEqualTo(30);
+        assertThat(userAccount.getProducedPower()).isEqualTo(30);
     }
 
     @Test
     public void consumed() {
         userAccount.consume(50);
-        assertThat(userAccount.consumed()).isEqualTo(50);
+        assertThat(userAccount.getConsumedPower()).isEqualTo(50);
     }
 
     @Test
     public void ratio() {
         userAccount.produce(40);
         userAccount.consume(30);
-        assertThat(userAccount.ratio()).isEqualTo((float) 40/30);
+        assertThat(userAccount.getRatio()).isEqualTo((float) 40/30);
     }
 }

@@ -3,7 +3,6 @@ package com.powerman.RestController;
 import com.powerman.Database.AccountStore;
 import com.powerman.model.MainPowerProvider;
 import com.powerman.model.UserAccount;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -38,11 +36,11 @@ public class AccountResource {
         return ResponseEntity.ok(accountStore.getAccount(accountId));
     }
 
-    @RequestMapping(value = "/account", method = RequestMethod.POST)
+    @RequestMapping(value = "/account", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity createAccount(@RequestBody int accountId, UriComponentsBuilder b) {
         UserAccount account = new UserAccount(accountId);
         accountStore.addAccount(account);
-        UriComponents uriComponents = b.path("/account/{id}").buildAndExpand(account.accountNumber());
+        UriComponents uriComponents = b.path("/account/{id}").buildAndExpand(account.getAccountNumber());
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(uriComponents.toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
